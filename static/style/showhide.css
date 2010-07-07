@@ -1,0 +1,19 @@
+.CRUDForm {
+          display: none;
+          }
+
+.showCRUDForm {
+              cursor: pointer;
+              }
+.newsbox {
+           display: none;
+           }
+.shownewsbox {
+               cursor: pointer;
+               }
+.NewItem {
+           display: none;
+           }
+.showNewItem {
+               cursor: pointer;
+               }

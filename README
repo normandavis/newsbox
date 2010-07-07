@@ -1,0 +1,9 @@
+# Modified: [README] 2010-07-07 18h:56m:09s [norman@albany.fairlight.com:/scp:rupert@192.168.0.16:/usr/lib/cgi-bin/newsbox/README]
+
+* newsbox subtree expects to reside in /usr/lib/cgi-bin/
+* requires a sumbolic link from /var/www/newsbox to /usr/lib/cgi-bin/newsbox
+* can be accessed via http://localhost/cgi-bin/newsbox/index.cgi
+* still using explicit local MySQL DB
+* need to change to SQLite embedded DB
+
+

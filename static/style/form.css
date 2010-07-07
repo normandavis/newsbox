@@ -1,0 +1,46 @@
+.form {
+        float: left;
+        width: 100%;
+        margin: 10px 0 40px 0px;
+        }
+label {
+        display: block;
+        }
+input:focus, textarea:focus {
+                              background: #F5F5DC;
+                              }
+p.wrap  {
+          font: 11px/15px verdana, sans-serif;
+          margin: 6px 0 0 0;
+          width: 100%;
+          clear:both;
+          }	
+input, textarea,.label, .blabel {
+   font: 11px/15px verdana, sans-serif;
+}
+input[type="text"]  { 
+                      width: 240px; 
+                      margin-top: 0 
+                      }
+input[type="radio"] { margin: 5px 2px 0 0 } 
+input[id=submitBtn] { margin: 10px  0 0 } 
+
+.label, .blabel {
+   line-height: 18px;
+   padding-right: 7px;
+   margin: 0;
+}
+.blabel {
+   font-weight: bold;
+}
+#msgs { 
+      display: none; 
+      margin: 0 0 0 20px;
+}
+p.success {
+   margin: 20px 0 0 20px;
+   padding: 0 0 0 20px;
+   font: bold 12px verdana, sans-serif;
+   color: green;
+   background: url(/EG/images/success.png) no-repeat 5px;
+}
