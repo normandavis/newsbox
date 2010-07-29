@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jQuery UI Tabs Demo</title>
+    <style  type="text/css" media="all">@import "/newsbox/static/style/main.css";</style>
+
+    <script type="text/javascript" src="/newsbox/static/scripts/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="/newsbox/static/scripts/jquery-ui-personalized-1.5.2.packed.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+      	$('#tabvanilla > ul').tabs({ fx: { height: 'toggle', opacity: 'toggle' } });
+    });
+    </script>
+
+  </head>
+
+  <body>
+    <div id="tabvanilla" class="widget">
+
+      <label for="tabnav" class="blabel">NewsBox News Management System</label>
+      
+      <ul class="tabnav">
+	<li><a href="#view"   >view</a></li>
+	<li><a href="#create" >create</a></li>
+	<li><a href="#edit"   >edit</a></li>
+	<li><a href="#logout"   >logout</a></li>
+      </ul>
+	    
+      <div id="view" class="tabdiv">
+	<iframe 
+	    id="ifrm" 
+	    name="ifrm" 
+	    src="index.cgi?rm=np" 
+	    scrolling="no" 
+	    width="80%" 
+	    height="320" 
+	    frameborder="0">
+	  Your browser doesn't support iframes.
+	</iframe> 
+      </div><!--/view-->
+      
+      <div id="create" class="tabdiv">
+	<iframe 
+	    id="ifrm" 
+	    name="ifrm" 
+            src="index.cgi?rm=cp"
+	    scrolling="no" 
+	    width="80%" 
+	    height="320" 
+	    frameborder="0">
+	  Your browser doesn't support iframes.
+	</iframe> 
+      </div><!--/create-->
+      
+      <div id="edit" class="tabdiv">
+	<iframe 
+	    id="ifrm" 
+	    name="ifrm" 
+	    src="index.cgi?rm=up" 
+	    scrolling="yes" 
+	    width="80%" 
+	    height="320" 
+	    frameborder="0">
+	  Your browser doesn't support iframes.
+	</iframe> 
+      </div><!--edit-->
+      
+      <div id="logout" class="tabdiv">
+      you have now logged out.
+      </div><!--logout-->
+      
+    </div><!--/widget-->
+  </body>
+</html>

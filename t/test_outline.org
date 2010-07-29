@@ -1,0 +1,72 @@
+# uses emacs org-mode for great justice!
+# Modified: [test_outline.org] 2010-07-23 17h:02m:04s [norman@albany.fairlight.com:/scp:rupert@192.168.0.16:/../home/rupert/projects/software/perl/cgi-bin/newsbox/t/test_outline.org]
+
+* Test Driven Development
+** all tests:
+*** should be self-contained
+*** should leave things the way they found them
+*** that we want to pass should be listed here and added too as we progress
+*** should be written before the code to be tested
+
+
+* TODO check all libraries can load
+** 000-libraries.t
+** this should be local to the tests wherever possible
+** use_ok:
+- [X] CGI::Application 
+- [X] HTML::TagFilter 
+- [X] Email::Valid  
+- [X] Data::Dumper 
+- [X] CGI::Session
+- [X] CGI::Application::Plugin::DBH  
+- [X] CGI::Application::Plugin::TT 
+- [X] SQL::Translator
+- [X] Parse::RecDescent
+- [X] XML::Writer
+
+* TODO check fckeditor
+** 001-fckeditor.t
+** use_ok
+- [X] CGI::FCKeditor
+** isa_ok
+- [X] CGI::FCKeditor
+** can_ok:
+- [X] create
+- [X] set_name
+- [X] set_base
+- [X] set_set
+- [X] set_value
+** is:
+- [X] "output is as expected"
+
+* TODO check validation code
+** 002-validation.t
+** use_ok
+- [X] NewsBox
+** isa_ok
+- [X] NewsBox
+** can_ok:
+- [X] new
+- [X] _val_input
+- [X] _val_email
+- [X] _val_selected
+** is:
+- [X] "catches empty input."
+- [X] "catches over-long input.
+- [X] "allows html tags"
+ 
+* TODO check DBI code is installed
+** 003-DBI.t
+** 
+* TODO check DBIx Class Schema
+** 004-NewsBoxSchema.t
+** 
+- [ ] 
+* TODO check DBIx Class
+** 005-NewsBoxDB.t
+** 
+- [ ] 
+* TODO check web interface
+** 
+** 
+- [ ] 

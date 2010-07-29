@@ -1,0 +1,77 @@
+# Default settings for Perl::Critic itself can be set before the first named 
+# block. For example, putting any or all of these at the top of your 
+# configuration file will set the default value for the corresponding 
+# constructor argument.
+#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   severity  = 3                                     #Integer or named level
+#   only      = 1                                     #Zero or One
+#   force     = 0                                     #Zero or One
+#   verbose   = 4                                     #Integer or format spec
+#   top       = 50                                    #A positive integer
+#   theme     = (pbp || security) && bugs             #A theme expression
+#   include   = NamingConventions ClassHierarchies    #Space-delimited list
+#   exclude   = Variables  Modules::RequirePackage    #Space-delimited list
+#   criticism-fatal = 1                               #Zero or One
+#   color     = 1                                     #Zero or One
+#   allow-unsafe = 1                                  #Zero or One
+#   pager     = less                                  #pager to pipe output to
+#
+#
+#The remainder of the configuration file is a series of blocks like this:
+#
+#    [Perl::Critic::Policy::Category::PolicyName]
+#    severity = 1
+#    set_themes = foo bar
+#    add_themes = baz
+#    maximum_violations_per_document = 57
+#    arg1 = value1
+#    arg2 = value2
+#
+
+
+
+
+#--------------------------------------------------------------
+# I think these are really important, so always load them
+
+[TestingAndDebugging::RequireUseStrict]
+severity = 5
+
+[TestingAndDebugging::RequireUseWarnings]
+severity = 5
+
+#--------------------------------------------------------------
+# I think these are less important, so only load when asked
+
+[Variables::ProhibitPackageVars]
+severity = 2
+
+[ControlStructures::ProhibitPostfixControls]
+# My custom configuration
+allow = if unless  
+# Same as "severity = 2"
+severity = cruel   
+
+#--------------------------------------------------------------
+# Give these policies a custom theme.  I can activate just
+# these policies by saying `perlcritic -theme larry`
+
+[Modules::RequireFilenameMatchesPackage]
+add_themes = larry
+
+## !! need to install this cpan module !!
+#[TestingAndDebugging::RequireTestLables]
+#add_themes = larry curly moe
+
+#--------------------------------------------------------------
+# I do not agree with these at all, so never load them
+
+[-NamingConventions::Capitalization]
+[-ValuesAndExpressions::ProhibitMagicNumbers]
+
+#--------------------------------------------------------------
+# For all other Policies, I accept the default severity,
+# so no additional configuration is required for them.
+
+

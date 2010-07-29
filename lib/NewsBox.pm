@@ -1,111 +1,22 @@
 package NewsBox;
 use warnings;
 use strict;
-use base 'CGI::Application';
-use CGI::Application::Plugin::DBH (qw/dbh_config dbh/);
-use CGI::Application::Plugin::JSON ':all';
+use base qw|CGI::Application|;
+use CGI::Application::Plugin::DBH (qw|dbh_config dbh|);
+use CGI::Application::Plugin::JSON qw|:all|;
 use CGI::Application::Plugin::TT;
 use HTML::TagFilter;
 use Email::Valid;
 use Data::Dumper;
+use NewsBox::Model::Validate qw|:all|;
+
+use vars qw($VERSION);
+
+$VERSION = '0.01';
 
 my $debug = 0;
 
 
-=head2 _val_input
-
- --------------------------------------------------------------------------------
-
-    subroutine : _val_input
-          task : validate form field input
-            in : 
-           out : 
-  side effects : 
-   assumptions : 
-       created : 
-        status : works as of 
-    Nota Benne : 
-
--- 
-
-=cut
-
-sub _val_input {
-
-   my $self = shift;
-   my ($mand, $len, $value) = @_;
-
-   if (!$value && $mand) {
-     return (undef, { msg => 'cannot be blank' });
-   } elsif ($len && (length($value) > $len) ) {
-      return (undef, { msg => 'is limited to '.$len.' characters' });
-   } elsif ($value && $value !~ /^([\w \.\,\-\(\)\?\:\;\"\!\'\/\n\r]*)$/) {
-      return (undef, { msg => 'can only use letters, numbers, spaces and -.,&:\'' });
-   } else {
-      my $tf = new HTML::TagFilter;
-      return ($tf->filter($1));
-   }
-}#_val_input
-
-
-=head2 _val_email
-
- --------------------------------------------------------------------------------
-
-    subroutine : _val_email
-          task : validate email address
-            in : 
-           out : 
-  side effects : 
-   assumptions : 
-       created : 
-        status : works as of 
-    Nota Benne : 
-
--- 
-
-=cut
-
-sub _val_email { 
-   my $self = shift;
-   my ($mand, $value) = @_;
-   if ( !Email::Valid->address($value) && $mand ) { 
-      return ( undef, { msg => 'address does not appear to be valid or is blank' }	);
-   } elsif ( !Email::Valid->address($value) && $value ) {
-      return ( undef, { msg => 'address does not appear to be valid or is blank' }	);
-   } else {
-      return $value;
-   }
-}#_val_email
-
-
-=head2 _val_selected
-
- --------------------------------------------------------------------------------
-
-    subroutine : _val_selected
-          task : test whether a radio button has been selected or not.
-            in : 
-           out : 
-  side effects : 
-   assumptions : 
-       created : 
-        status : works as of 
-    Nota Benne : 
-
--- 
-
-=cut
-
-sub _val_selected {
-   my $self = shift;
-   my ($value) = @_;
-   if (!$value) {
-     return (undef, { msg => 'must be selected' });
-   } else {
-     return $value;
-   }
-}#_val_selected
 
 
 =head2 _validate_form
@@ -167,14 +78,15 @@ sub _create_item {
     my $self = shift;
 
     my $newsItem  = $self->query->param('newsItem');
+
     # make sure that the parameter is properly quoted
     my $newsItem_quoted = $self->dbh->quote($newsItem);
     my $sth = $self->dbh->prepare("INSERT INTO news(item) VALUES ($newsItem_quoted);")
 	or die "Can't prepare SQL statement: $DBI::errstr\n";
-
     # update the news item in the store
     $sth->execute
 	or die "Can't execute SQL statement: $DBI::errstr\n";
+
     $self->param('success_list' => [{'success' => 'New record added'}]);
 
 }#_create_item
@@ -319,11 +231,11 @@ sub _delete_item {
 #-- 
 
 
-=head2 rm_show_page
+=head2 rm_show_home_page
 
  --------------------------------------------------------------------------------
 
-    subroutine : rm_show_page
+    subroutine : rm_show_home_page
           task : display the web page that fronts the web app
             in : 
            out : 
@@ -337,7 +249,7 @@ sub _delete_item {
 
 =cut
 
-sub rm_show_page {
+sub rm_show_home_page {
 
     my $self = shift;
 
@@ -356,9 +268,125 @@ sub rm_show_page {
 	dump      => $debug ? "<pre> " . Dumper($self) . "</pre>" : "",
 	);
 
-    return $self->tt_process('static/index.tt2', \%params);
+    return $self->tt_process('static/templates/index.tt2', \%params);
+#    return $self->tt_process('static/newsbox.tt2', \%params);
 
-}#rm_show_page
+}#rm_show_home_page
+
+
+=head2 rm_show_newsbox_page
+
+ --------------------------------------------------------------------------------
+
+    subroutine : rm_show_newsbox_page
+          task : display the web page that fronts the web app
+            in : 
+           out : 
+  side effects : 
+   assumptions : 
+       created : 
+        status : works as of 2010-07-04 14:08:10
+    Nota Benne : 
+
+-- 
+
+=cut
+
+sub rm_show_newsbox_page {
+
+    my $self = shift;
+
+    # get the items from the database 
+    my $sth = _read_item_table($self->dbh); 
+    my $newsitems = [];
+    # and load them into the TT var
+    while (my $row = $sth->fetchrow_hashref) {
+	push (@$newsitems,$row);
+    }
+
+    my %params = (
+	email     => 'email@rupertthehacker.com',
+	pagetitle => 'My NewsBox Test',
+	newsitems => $newsitems,
+	dump      => $debug ? "<pre> " . Dumper($self) . "</pre>" : "",
+	);
+
+    return $self->tt_process('static/templates/newsbox.tt2', \%params);
+
+}#rm_show_newsbox_page
+
+
+=head2 rm_show_create_page
+
+ --------------------------------------------------------------------------------
+
+    subroutine : rm_show_create_page
+          task : display the web page that fronts the web app
+            in : 
+           out : 
+  side effects : 
+   assumptions : 
+       created : 
+        status : works as of 2010-07-04 14:08:10
+    Nota Benne : 
+
+-- 
+
+=cut
+
+sub rm_show_create_page {
+
+    my $self = shift;
+
+    my %params = (
+	dump      => $debug ? "<pre> " . Dumper($self) . "</pre>" : "",
+	);
+
+    return $self->tt_process('static/templates/create.tt2', \%params);
+
+}#rm_show_create_page
+
+
+=head2 rm_show_update_page
+
+ --------------------------------------------------------------------------------
+
+    subroutine : rm_show_update_page
+          task : display the web page that fronts the web app
+            in : 
+           out : 
+  side effects : 
+   assumptions : 
+       created : 
+        status : works as of 2010-07-04 14:08:10
+    Nota Benne : 
+
+-- 
+
+=cut
+
+sub rm_show_update_page {
+
+    my $self = shift;
+
+    # get the items from the database 
+    my $sth = _read_item_table($self->dbh); 
+    my $newsitems = [];
+    # and load them into the TT var
+    while (my $row = $sth->fetchrow_hashref) {
+	push (@$newsitems,$row);
+    }
+
+    my %params = (
+	email     => 'email@rupertthehacker.com',
+	pagetitle => 'My Update News Item Test',
+	newsitems => $newsitems,
+	dump      => $debug ? "<pre> " . Dumper($self) . "</pre>" : "",
+	);
+
+    return $self->tt_process('static/templates/update.tt2', \%params);
+
+}#rm_show_update_page
 
 
 =head2 rm_create_item
@@ -373,12 +401,12 @@ sub rm_show_page {
    assumptions : 
        created : 
         status : works as of 
-    Nota Benne : 
+    Nota Benne : need to refactor _val_input to accomodate html before we can use
+                 it here
 
 -- 
 
 =cut
-
 
 sub rm_create_item {
 
@@ -388,7 +416,7 @@ sub rm_create_item {
     if ( $self->param('error_list')) {
 	my $result = [{ 'messages' => $self->param('error_list') }];
 	return $self->json_body( $result );
-   }
+    }
    
     $self->_create_item();
    
@@ -514,17 +542,24 @@ sub rm_delete_item {
 
 sub setup {
     my $self = shift;
-    $self->start_mode('s');
+    $self->start_mode('hp');
     $self->mode_param('rm');
     $self->run_modes(
-	's' => 'rm_show_page',
-	'c' => 'rm_create_item',
-	'r' => 'rm_read_all_items',
-	'u' => 'rm_update_item',
-	'd' => 'rm_delete_item',
+	'hp' => 'rm_show_home_page',
+	'cp' => 'rm_show_create_page',
+	'up' => 'rm_show_update_page',
+	'np' => 'rm_show_newsbox_page',
+	'c'  => 'rm_create_item',
+	'r'  => 'rm_read_all_items',
+	'u'  => 'rm_update_item',
+	'd'  => 'rm_delete_item',
 	);
 
     # use the same args as DBI->connect();
+#    my $data_source = "dbi:SQLite:dbname=newsbox.db";
+#    my $username    = '';
+#    my $auth        = '';
+
     my $data_source = 'dbi:mysql:latestnews:192.168.0.27';
     my $username    = 'rupert';
     my $auth        = 'rupert';
@@ -536,6 +571,10 @@ sub setup {
     $self->dbh_config($config_aref);
 
 }#setup
+
+sub version {
+    return $VERSION;
+}#version
 
 
 =head1 AUTHOR

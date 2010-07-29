@@ -1,0 +1,142 @@
+[% title = pagetitle %]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>[% title %]</title>
+    <link rel="stylesheet" href="/newsbox/static/style/style.css" type="text/css" media="screen" />
+    <style  type="text/css" media="all">@import "/newsbox/static/style/form.css";</style>
+
+    <script language="javascript" type="text/javascript" src="/newsbox/static/scripts/forms.js"></script>
+    <script language="javascript" type="text/javascript" src="/newsbox/static/scripts/jquery.form.js"></script>
+    <script language="javascript" type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script language="javascript" type="text/javascript" src="/ckeditor/adapters/jquery.js"></script>
+    <!--script language="javascript" type="text/javascript" src="/newsbox/static/scripts/jquery-1.3.2.min.js"></script-->    
+    <script language="javascript" type="text/javascript" src="/newsbox/static/scripts/jquery-1.4.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/newsbox/static/scripts/jquery.flow.1.2.auto.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+	$("#myController").jFlow({
+	    slides: "#slides",
+	    controller: ".jFlowControl", // must be class, use . sign
+	    selectedWrapper: "jFlowSelected",  // just pure text, no sign
+	    auto: false,		//auto change slide, default true
+	    width: "260px",
+	    height: "440px",
+	    duration: 200,
+	    prev: ".jFlowPrev", // must be class, use . sign
+	    next: ".jFlowNext" // must be class, use . sign
+	});
+    });
+    </script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+    $(function()
+      {
+	  var config = {
+	      toolbar:
+	      [
+		  ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'],
+		  ['UIColor']
+	      ]
+	  };
+	  
+	  // Initialize the editor.
+	  // Callback function can be passed and executed after full instance creation.
+	  $('.jquery_ckeditor').ckeditor(config);
+      });
+      
+	//]]>
+      </script>
+
+  </head>
+
+  <body>
+
+    [% dump %]	
+
+     <!-- Javascript Alerts Div -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- This <div> holds alert messages to be display in the sample page. -->
+    <div id="alerts">
+      <noscript>
+	<p>
+	  <strong>CKEditor requires JavaScript to run</strong>. In a browser with no JavaScript
+	  support, like yours, you should still see the contents (HTML data) and you should
+	  be able to edit it normally, without a rich editor interface.
+	</p>
+      </noscript>
+    </div>
+
+
+   <div class="jflow-content-slider">
+      <div id="slides">
+
+	[% # UPDATE %]
+	[% # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ %]
+	[% # now print all the existing news items %]
+	[% FOREACH item IN  newsitems -%]     
+	<div class="slide-wrapper">
+	  <div class="slide-details">
+	    <div class="description">
+	      <div id="msgs"> </div>
+		<form id='update' method='post' action='/cgi-bin/newsbox/index.cgi'>
+		  <input type="hidden" name='rm' value="u" />
+		    <input type="hidden" name="newsItemId" id="newsItemId" value="[% item.id %]" />
+		    <textarea class='jquery_ckeditor' name='newsItem'  id='newsItem' cols='28' rows='16' wrap='hard'>
+		      [% item.item %]
+		    </textarea>
+		  <p class="wrap">
+		    <input type='submit' name='btnsubmit[% item.id %]'  value="Update this news item" />
+		  </p>
+		</form>
+		<!-- DELETE -->
+		<form id='delete' method='post' action='/cgi-bin/newsbox/index.cgi'>
+		  <input type="hidden" name='rm' value="d" />
+		  <input type="hidden" name="newsItemId" id="newsItemId" value="[% item.id %]" />
+		  <p class="wrap">
+		    <input type='submit' name='btnsubmit[% item.id %]'  value="Delete this news item" />
+		  </p>
+		</form>
+	      </div><!-- description -->
+	    </div><!-- slide-details -->
+	    <div class="clear"></div><!-- clear -->
+	  </div><!-- slide-wrapper -->
+	  [% END %]
+
+	</div><!-- slides -->
+          <script type="text/javascript" language="javascript"> 
+        $(function() { 
+	    $('#update').submit(function() {
+		//removes error messages so they don't double up
+		//   on a resubmit still with errors
+		normalize_labels(this,'000'); 
+		
+		$.ajax({                
+		    type: "POST",
+		    url: $(this).attr('action'),
+		    datatype: "json",
+		    data: $(this).serialize(),  
+		    success: function(result){
+			//pass JSON object, form name, name of success div
+			//  to external .js library used by all forms 
+			parse_results(result,'menu','msgs'); 
+		    } 
+		});
+		return false;
+	    });
+	});
+      </script> 
+
+      <div id="myController">
+	<span class="jFlowPrev">Prev</span>
+	[% inc = 0 %]
+	[% FOREACH item IN  newsitems; inc=inc+1 -%]     
+	<span class="jFlowControl">[% inc %]</span>
+	[% END %]
+	<span class="jFlowNext">Next</span>
+      </div><!-- myController -->
+      <div class="clear"></div><!-- clear -->
+    </div><!-- jflow-content-slider -->
+  </body>
+</html>

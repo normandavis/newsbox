@@ -1,0 +1,18 @@
+#jFlowSlide{ background:#DBF3FD; font-family: Georgia; }
+#myController { font-family: Georgia; padding:2px 0;  width:260px; background:#3AB7FF; }
+#myController span.jFlowSelected { background:#43A0D5;margin-right:0px; }
+
+.slide-wrapper { padding: 5px; }
+.slide-details { width:240px; float:right; margin-left:10px;}
+.slide-details h2 { font-size:1.5em; font-style: italic; font-weight:normal; line-height: 1; margin:0; }
+.slide-details .description { margin-top:10px; }
+
+.jFlowControl, .jFlowPrev, .jFlowNext { 
+                                        color:#FFF; 
+                                        cursor:pointer; 
+                                        padding-left:5px; 
+                                        padding-right:5px; 
+                                        padding-top:2px; 
+                                        padding-bottom:2px;
+                                        }
+.jFlowControl:hover, .jFlowPrev:hover, .jFlowNext:hover { background: #43A0D5; }

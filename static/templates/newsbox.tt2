@@ -1,0 +1,55 @@
+[% title = pagetitle %]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>[% title %]</title>
+    <style  type="text/css" media="all">@import "/newsbox/static/style/master.css";</style>
+    <style  type="text/css" media="all">@import "/newsbox/static/style/form.css";</style>
+
+    <script type="text/javascript" src="/newsbox/static/scripts/jquery-1.4.2.min.js"></script>
+    <!-- script type="text/javascript" src="/newsbox/static/scripts/jquery.form.js"></script -->
+    <!-- script type="text/javascript" src="/newsbox/static/scripts/forms.js"></script -->
+    <!-- script type="text/javascript" src="/newsbox/static/scripts/showhide.js"></script -->
+
+
+    <script type="text/javascript" src="/newsbox/static/scripts/scroller.js"></script>
+
+  </head>
+ 
+  <body>  
+
+
+    [% dump %]	
+
+    <!-- News Box Div -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <p class="wrap">
+      <label for="newsbox" class="blabel">Latest News</label>
+         </p>
+    <div id="newsbox" class="newsbox">
+    <script type="text/javascript" language="javascript"> 
+    $(function() { 
+        // jQuery 1.4 introduced getJSON to simplify the call
+        // $.getJSON(instancescript, key:values, process_result)
+
+
+	$.getJSON('/cgi-bin/newsbox/index.cgi',
+		  { rm:'r'},
+		  function(result){ 
+		      // returns: {"news":["this is news","no more bollox","This is Norman's new News"]}
+		      
+		  }
+		 );
+	
+    });
+
+    // need to pass in the JSON array "news" to pausescroller as first parameter.
+	var bollox = new Array;
+	bollox[0] = "This is news item #1";
+	bollox[1] = "This is news item #2";
+	new pausescroller( bollox, "pscroller1", "someclass", 1000 );
+    </script>
+    </div><!-- newsbox -->
+
+  </body>
+</html>
